@@ -1,0 +1,48 @@
+# ET B-School Brief — all user-facing settings live here. No code changes needed.
+
+# RSS sources. ET feeds are primary (is_et: true); others are supplementary.
+sources:
+  - name: "Economic Times — Top Stories"
+    url: "https://economictimes.indiatimes.com/rssfeedstopstories.cms"
+    is_et: true
+  - name: "Economic Times — Markets"
+    url: "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms"
+    is_et: true
+  - name: "Economic Times — Economy"
+    url: "https://economictimes.indiatimes.com/news/economy/rssfeeds/1373380680.cms"
+    is_et: true
+  - name: "Economic Times — Industry"
+    url: "https://economictimes.indiatimes.com/industry/rssfeeds/13352306.cms"
+    is_et: true
+  - name: "Livemint — Markets"
+    url: "https://www.livemint.com/rss/markets"
+    is_et: false
+  - name: "BusinessLine — Economy"
+    url: "https://www.thehindubusinessline.com/economy/feeder/default.rss"
+    is_et: false
+
+# How many raw items (most recent) to keep per feed before curation.
+max_items_per_feed: 15
+
+# Curation output shape.
+digest:
+  max_items: 12          # hard cap on curated items in the email
+
+# What the AI should keep / drop, and the reader it curates for.
+curation:
+  reader_context: >
+    An MBA-Tech (BTech + MBA) student reading Economic Times daily for a management
+    course. Prioritise business strategy, the economy, corporate moves, policy,
+    markets, and leadership. Drop sports, lifestyle, entertainment, and celebrity news.
+
+# Gemini settings. (AI is used automatically when GEMINI_API_KEY is set.)
+# Model chain lives in etbrief/gemini.py (quality-first: Gemini 3.1 Pro).
+ai:
+  batch_size: 5          # items per API call — never one call per item
+  rate_limit_seconds: 2  # billed account: high RPM, so only a light throttle
+
+# Delivery.
+delivery:
+  # Recipient can be overridden by the BRIEF_TO env var / GH secret.
+  to: "vasuagrawal1040@gmail.com"
+  subject_prefix: "📈 ET B-School Brief"
