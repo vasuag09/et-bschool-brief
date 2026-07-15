@@ -10,3 +10,4 @@ venv/
 .ruff_cache/
 .code-graph/
 .claude/settings.local.json
+.claude/traces/
