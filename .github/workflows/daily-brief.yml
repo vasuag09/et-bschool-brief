@@ -13,7 +13,7 @@ permissions:
 jobs:
   brief:
     runs-on: ubuntu-latest
-    timeout-minutes: 20   # Gemini 3.1 Pro is slower per call than flash
+    timeout-minutes: 10   # Claude Haiku 4.5 is fast per call
     steps:
       - uses: actions/checkout@v4
 
@@ -26,7 +26,9 @@ jobs:
 
       - name: Send the brief
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          AWS_BEARER_TOKEN_BEDROCK: ${{ secrets.AWS_BEARER_TOKEN_BEDROCK }}
+          BEDROCK_REGION: ap-south-1
+          BEDROCK_MODEL_ID: global.anthropic.claude-haiku-4-5-20251001-v1:0
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           BRIEF_TO: ${{ secrets.BRIEF_TO }}

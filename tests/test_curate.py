@@ -49,7 +49,7 @@ def test_curate_items_have_full_shape_and_et_flag():
 
 
 def test_curate_degrades_when_ai_unavailable():
-    # Gemini down (returns {}) → degraded digest, headline-only, not empty.
+    # AI down (returns {}) → degraded digest, headline-only, not empty.
     arts = [_art("Some biz news", "https://x/1", is_et=True), _art("More news", "https://x/2")]
 
     digest = curate.curate(arts, CFG, generate_fn=lambda *a, **k: {})

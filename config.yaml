@@ -35,11 +35,12 @@ curation:
     course. Prioritise business strategy, the economy, corporate moves, policy,
     markets, and leadership. Drop sports, lifestyle, entertainment, and celebrity news.
 
-# Gemini settings. (AI is used automatically when GEMINI_API_KEY is set.)
-# Model chain lives in etbrief/gemini.py (quality-first: Gemini 3.1 Pro).
+# AI settings. (Curation runs automatically when AWS_BEARER_TOKEN_BEDROCK is set.)
+# Provider: Claude Haiku 4.5 on Amazon Bedrock. Region + model id are env-overridable
+# in etbrief/llm.py (default: ap-south-1 / apac inference profile).
 ai:
   batch_size: 5          # items per API call — never one call per item
-  rate_limit_seconds: 2  # billed account: high RPM, so only a light throttle
+  rate_limit_seconds: 1  # Haiku has high RPM; only a light throttle
 
 # Delivery.
 delivery:

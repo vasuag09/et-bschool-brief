@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from etbrief.gemini import generate as _default_generate
+from etbrief.llm import generate as _default_generate
 from etbrief.models import Article, CuratedItem, Digest
 
 GenerateFn = Callable[..., dict]

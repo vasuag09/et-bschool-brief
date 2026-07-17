@@ -2,8 +2,45 @@
 
 slug: et-bschool-brief
 phase: ship
-status: ready-to-commit
-next_skill: (awaiting user go for git init + push)
+status: MODEL-MIGRATION-PENDING-KEY
+next_skill: (add AWS_BEARER_TOKEN_BEDROCK → live re-verify → commit/push)
+
+## in progress: cost migration Gemini 3.1 Pro → Claude Haiku 4.5 on Bedrock (2026-07-17)
+- Reason: pipeline works & content is fine; Gemini 3.1 Pro was burning money. User chose
+  Claude Haiku 4.5 (cheap, plenty capable) via AMAZON BEDROCK (ap-south-1, access enabled).
+- Code DONE + tested (34 pass, 96% cov, llm.py 96%). NOT yet live-verified, NOT committed.
+- New module etbrief/llm.py: Bedrock InvokeModel REST via `requests` (no new dep). Bearer
+  auth from AWS_BEARER_TOKEN_BEDROCK (no SigV4). URL model id = inference profile
+  apac.anthropic.claude-haiku-4-5-20251001-v1:0 (env-overridable via BEDROCK_MODEL_ID /
+  BEDROCK_REGION). Body: anthropic_version bedrock-2023-05-31, NO model field. JSON forced
+  via assistant-prefill "{" (Claude has no JSON mode). curate.py provider-agnostic (injected
+  generate_fn) — only its import changed.
+- Deleted etbrief/gemini.py + tests/test_gemini.py; added tests/test_llm.py.
+- Env: GEMINI_API_KEY removed; now AWS_BEARER_TOKEN_BEDROCK (secret) + BEDROCK_REGION /
+  BEDROCK_MODEL_ID (plain env, defaults in code + set literally in workflow).
+- config: rate_limit 2→1s; workflow timeout 20→10min.
+- LIVE-VERIFIED (curation): key added to .env; full local run collected 89 items and
+  Claude Haiku 4.5 curated ALL 18/18 batches OK. Bedrock path works end-to-end.
+- MODEL-ID FIX: apac.anthropic.claude-haiku-4-5-... → 400 "model identifier is invalid"
+  (apac profile is Claude 3 Haiku only). Correct id = GLOBAL profile
+  global.anthropic.claude-haiku-4-5-20251001-v1:0 (found via Bedrock ListInferenceProfiles).
+  Updated in llm.py default, .env, workflow, .env.example, README.
+- EMAIL not locally verifiable: outbound SMTP port 465 is BLOCKED on this network
+  (bare socket test to smtp.gmail.com:465 times out). mailer.py unchanged; GH Actions
+  sends fine (prior runs). Verify email via a cloud workflow_dispatch run.
+- REMAINING (needs user OK — git ops gated): 1) commit + push; 2) gh secret set
+  AWS_BEARER_TOKEN_BEDROCK on vasuag09/et-bschool-brief; 3) after push, gh secret delete
+  GEMINI_API_KEY (NOT before — old workflow still refs it until pushed); 4) trigger
+  workflow_dispatch to confirm cloud curation+email.
+- 34 tests pass, 96% cov.
+
+## deployment
+- Repo: https://github.com/vasuag09/et-bschool-brief (private, account vasuag09)
+- 4 secrets set (GEMINI_API_KEY, GMAIL_USER, GMAIL_APP_PASSWORD, BRIEF_TO).
+- Test workflow run 29414926203 succeeded in 1m14s — brief sent via cloud.
+- Daily cron live: 07:00 IST (30 1 * * * UTC).
+- Minor: Node20 deprecation warning on checkout@v4/setup-python@v5 (auto-forced to
+  node24, non-blocking) — bump action majors someday.
 
 ## verify results
 - Live end-to-end run succeeded: 89 unique items → Gemini curated 18/18 batches →

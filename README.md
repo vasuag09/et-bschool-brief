@@ -4,7 +4,7 @@ A free, automated daily digest of **Economic Times** (plus other free business p
 curated by AI for an MBA-Tech student and emailed to your Gmail every morning.
 
 - **Collect** — pulls Economic Times RSS feeds (primary) + Livemint/BusinessLine (supplementary)
-- **Curate** — a free LLM (Gemini Flash) drops sports/lifestyle noise, keeps
+- **Curate** — an LLM (Claude Haiku 4.5) drops sports/lifestyle noise, keeps
   strategy / economy / corporate / policy / markets / leadership, and writes a short
   "why it matters" for each item
 - **Deliver** — a clean HTML brief lands in your inbox at ~7 AM IST
@@ -26,7 +26,7 @@ recipient. No code changes needed to tune it.
 
 ## Setup (one time, ~5 minutes)
 
-You need two free things: a **Gmail App Password** and a **Gemini API key**.
+You need two things: a **Gmail App Password** (free) and an **Amazon Bedrock API key**.
 
 ### 1. Gmail App Password (for sending)
 1. Turn on **2-Step Verification**: https://myaccount.google.com/security
@@ -34,11 +34,13 @@ You need two free things: a **Gmail App Password** and a **Gemini API key**.
    → pick "Mail", name it "ET Brief" → copy the **16-character** password.
    (This is *not* your normal Gmail password.)
 
-### 2. Gemini API key (for curation)
-1. Go to https://aistudio.google.com/app/apikey → **Create API key** → copy it.
-   This project uses **Gemini 3.1 Pro** (quality-first) via a billed account. The model
-   chain is in `etbrief/gemini.py`; swap the first entry for `gemini-flash-latest` if you
-   ever want to trade quality for lower cost.
+### 2. Amazon Bedrock API key (for curation)
+1. In the **AWS Bedrock console** (region **ap-south-1 / Mumbai**): enable **model access**
+   for *Claude Haiku 4.5*, then create a **Bedrock API key** (a bearer token) and copy it.
+   This project uses **Claude Haiku 4.5** on Bedrock (cost-first — cheap and more than
+   capable for news summarisation). Region and model id are set in `etbrief/llm.py` and
+   overridable via `BEDROCK_REGION` / `BEDROCK_MODEL_ID`; the default uses the ap-south-1
+   runtime with Haiku 4.5's `global.` inference profile.
 
 ### 3. Run it daily for free (GitHub Actions)
 1. Push this repo to GitHub.
@@ -47,7 +49,7 @@ You need two free things: a **Gmail App Password** and a **Gemini API key**.
 
    | Secret | Value |
    |--------|-------|
-   | `GEMINI_API_KEY` | your Gemini key |
+   | `AWS_BEARER_TOKEN_BEDROCK` | your Bedrock API key (bearer token) |
    | `GMAIL_USER` | the Gmail address that sends the brief |
    | `GMAIL_APP_PASSWORD` | the 16-char App Password from step 1 |
    | `BRIEF_TO` | where to deliver (can be the same address) |
